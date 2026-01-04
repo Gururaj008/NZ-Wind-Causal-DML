@@ -1,0 +1,33 @@
+# A Tale of Two Islands — Causal Wind Analysis (NZ)
+
+**Paper:** *A Tale of Two Islands: A Physics-Informed Data Science Framework for Causal Wind Analysis in New Zealand* [file:242]  
+This repository contains the Python code and reproducible artifacts for estimating the **causal** effect of air density on New Zealand wind generation using Double Machine Learning (DML), comparing North Island (Te Apiti) vs South Island (White Hill). [file:242]
+
+## **Key idea**
+Raw correlations can show air density negatively associated with wind power because synoptic regimes confound wind speed and density; DML estimates the density effect after adjusting for wind dynamics + seasonal/diurnal structure. [file:242]
+
+## **What’s inside**
+- `paper_04_eda_and_coding.py`: End-to-end pipeline (EDA → causal DAG → DML → robustness + plots/tables). [file:241]
+- Outputs are written to:
+  - `ResultsPlots/` (figures such as correlation matrices, polar plots, power curves, forest plots). [file:241]
+  - `ResultsTables/` (CSV tables such as stationarity tests and DML summaries). [file:241]
+
+## **Data requirements**
+The script expects two prepared hourly datasets (one per island) with weather + generation features. [file:241]
+- `ENHANCEDDATASETNORTHISLAND.csv` (North Island: 2005–2024). [file:242]
+- `ENHANCEDDATASETSOUTHISLAND.csv` (South Island: 2009–2024). [file:242]
+
+Expected key columns used in DML:
+- Outcome `powermw` [file:241]
+- Treatment `airdensitykgm3` [file:241]
+- Controls include `windspeed100m`, `windcubed`, `turbulenceproxy`, `ramprate`, `windlag1`, plus harmonic time features (`hoursin/hourcos`, `monthsin/monthcos`) and wind direction harmonics (`windsin/windcos`). [file:241]
+
+## **Quick start**
+1. Create environment and install dependencies (typical):
+   - `pandas, numpy, matplotlib, seaborn, scipy, statsmodels, scikit-learn, xgboost, networkx, tqdm` [file:241]
+2. Place input CSVs under:
+   - `DataFinaldataset/ENHANCEDDATASETNORTHISLAND.csv`
+   - `DataFinaldataset/ENHANCEDDATASETSOUTHISLAND.csv` [file:241]
+3. Run:
+   ```bash
+   python paper_04_eda_and_coding.py
