@@ -23,8 +23,8 @@ This project uses a structural causal model (DAG) and **Double Machine Learning*
 The analysis compares two distinct wind regimes: **Te Apiti (North Island)** and **White Hill (South Island)**.
 
 1.  **Causal Effect:** After adjustment, the effect of air density flips to positive (consistent with physics).
-    * **North Island:** ~17.2 MW increase per $0.1~kg/m^3$ rise in density.
-    * **South Island:** ~3.9 MW increase per $0.1~kg/m^3$ rise in density.
+    * **North Island:** 17.2 MW increase per $0.1kg/m^3$ rise in density.
+    * **South Island:** 3.9 MW increase per $0.1kg/m^3$ rise in density.
 2.  **Heterogeneity:** The density effect is not constant. It peaks during **Summer** and at **medium wind speeds (6–10 m/s)**, providing a crucial margin during ramp-up events.
 3.  **Robustness:** Results hold up against placebo tests (random noise treatment), temporal stability checks (early vs. late era), and alternative learner specifications.
 
