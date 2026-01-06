@@ -5,33 +5,48 @@
 
 This repository contains the complete replication code for the study **"Two Wind Farms, Two Islands,"** which applies **Double Machine Learning (DML)** to estimate the causal drivers of wind power generation in New Zealand.
 
-By integrating 20 years of hourly ERA5 reanalysis data with grid generation logs (2005–2024), this framework disentangles the physical effect of air density from meteorological confounders, resolving the "negative correlation paradox" often seen in raw observational data.
-
 ---
 
-## **The Problem: Correlation vs. Causation**
+## **1. The Need**
 In raw observational data, **air density** often appears negatively correlated with wind power.
 * **Physics:** Higher air density ($\rho$) should increase power output ($P \propto \rho v^3$).
-* **Data Paradox:** High-pressure systems (high density) are often associated with calm, stable weather (low wind speed).
-* **Result:** Standard correlation metrics capture the weather regime, not the turbine physics.
+* **Data Paradox:** High-pressure systems (high density) are typically associated with calm, stable weather (low wind speed).
+* **Operational Risk:** Standard correlation-based forecasting models capture the weather regime rather than the true turbine physics, leading to potentially misleading signals for grid management.
 
-This project uses a structural causal model (DAG) and **Double Machine Learning** to isolate the marginal effect of density by adjusting for wind dynamics, seasonality, and synoptic state.
+This project moves beyond correlation to **causation**, identifying the marginal effect of air density to improve reliability in power systems planning.
 
----
+## **2. Input Data**
+The analysis integrates **20 years of hourly data (2005–2024)** from two distinct sources:
+* **Meteorological:** ERA5 Reanalysis (ECMWF) for 100m wind vectors, temperature, and surface pressure.
+* **Generation:** Grid injection logs from the New Zealand Electricity Authority (EMI).
 
-## **Key Findings**
-The analysis compares two distinct wind regimes: **Te Apiti (North Island)** and **White Hill (South Island)**.
+**Study Sites:**
+* **North Island:** Te Apiti Wind Farm (Complex terrain, channelled flow).
+* **South Island:** White Hill Wind Farm (Westerly flow, "Roaring Forties").
 
-1.  **Causal Effect:** After adjustment, the effect of air density flips to positive (consistent with physics).
+## **3. Methodology**
+We employ a **Double Machine Learning (DML)** framework to isolate the causal effect of air density:
+1.  **Causal Graph (DAG):** We assume a structural model where *Seasonality* and *Synoptic State* confound both *Air Density* and *Wind Speed*.
+2.  **Nuisance Models:** We use **XGBoost** regressors to learn the conditional expectations of both Power ($Y$) and Density ($T$) based on the confounders ($X$).
+3.  **Cross-Fitting:** We use time-ordered cross-validation to prevent overfitting and ensure residuals are orthogonal.
+4.  **Inference:** The final causal effect is estimated via a residual-on-residual regression, with uncertainty quantified using moving-block bootstrapping.
+
+## **4. Key Results**
+* **Paradox Resolved:** After causal adjustment, the effect of air density flips from negative to positive, consistent with aerodynamic laws.
+* **Magnitude:**
     * **North Island:** 17.2 MW increase per $0.1kg/m^3$ rise in density.
     * **South Island:** 3.9 MW increase per $0.1kg/m^3$ rise in density.
-2.  **Heterogeneity:** The density effect is not constant. It peaks during **Summer** and at **medium wind speeds (6–10 m/s)**, providing a crucial margin during ramp-up events.
-3.  **Robustness:** Results hold up against placebo tests (random noise treatment), temporal stability checks (early vs. late era), and alternative learner specifications.
+* **Heterogeneity:** The effect is not constant; it peaks during **Summer** and at **medium wind speeds (6–10 m/s)**, providing a critical operational margin during ramp-up events.
+
+## **5. Implications**
+* **Grid Stability:** Integrating density as a causal driver—rather than a passive correlate—adds operational value, particularly during "marginal" wind days in summer.
+* **Forecasting:** The framework offers a way to correct physical inconsistencies in "black box" AI models, reducing the risk of large errors during rare high-pressure, high-wind events.
+* **Scalability:** This physics-informed data science approach can be adapted for other renewable technologies (e.g., solar, hydro) where environmental drivers are highly confounded.
 
 ---
 
 ## **Repository Structure**
-The core analysis is contained in `NZ_wind_casual_DML.ipynb`, which is structured into six logical phases:
+The core analysis is contained in `NZ_wind_casual_DML.ipynb`, structured into six logical phases:
 
 | Phase | Description | Key Outputs |
 | :--- | :--- | :--- |
@@ -41,22 +56,6 @@ The core analysis is contained in `NZ_wind_casual_DML.ipynb`, which is structure
 | **04. Robustness** | Validation suite including Placebo tests (random noise), Temporal Stability (2005-14 vs 2015-24), and Learner sensitivity. | `Robustness_Table.csv` |
 | **05. Explainability** | **SHAP** (SHapley Additive exPlanations) to interpret the underlying nuisance models and visualize feature interactions. | `SHAP_Summary.png`, `SHAP_Dependence.png` |
 | **06. Sensitivity** | Moving-block bootstrapping for time-series uncertainty and operational-zero candidate filtering. | `Phase06_Overlap_Diagnostics.csv` |
-
----
-
-## **Data Requirements**
-The code requires two primary CSV files placed in `Data/Final_dataset/`:
-
-1.  `ENHANCED_DATASET_NORTH_ISLAND.csv` (2005–2024)
-2.  `ENHANCED_DATASET_SOUTH_ISLAND.csv` (2009–2024)
-
-**Key Variables:**
-* **Outcome:** `power_mw` (Hourly mean generation)
-* **Treatment:** `air_density_kgm3` (Derived from ERA5 Temp/Pressure)
-* **Controls:** `wind_speed_100m`, `wind_cubed`, `turbulence_proxy`, `ramp_rate`, `wind_lag_1`
-* **Time Features:** Harmonic encoding (`hour_sin/cos`, `month_sin/cos`)
-
----
 
 ## **Installation & Usage**
 
