@@ -7,10 +7,10 @@ This repository contains the Python code and reproducible artifacts for estimati
 Raw correlations can show air density negatively associated with wind power because synoptic regimes confound wind speed and density; DML estimates the density effect after adjusting for wind dynamics + seasonal/diurnal structure. 
 
 ## **What’s inside**
-- `paper_04_eda_and_coding.py`: End-to-end pipeline (EDA → causal DAG → DML → robustness + plots/tables). 
+- NZ_wind_casual_DML.ipynb`: End-to-end pipeline (EDA → causal DAG → DML → robustness + plots/tables). 
 - Outputs are written to:
-  - `ResultsPlots/` (figures such as correlation matrices, polar plots, power curves, forest plots). 
-  - `ResultsTables/` (CSV tables such as stationarity tests and DML summaries). 
+  - `Results/Plots/` (figures such as correlation matrices, polar plots, power curves, forest plots). 
+  - `Results/Tables/` (CSV tables such as stationarity tests and DML summaries). 
 
 ## **Data requirements**[file:241]
 - `ENHANCEDDATASETNORTHISLAND.csv` (North Island: 2005–2024). 
@@ -29,4 +29,4 @@ Expected key columns used in DML:
    - `DataF/inaldataset/ENHANCEDDATASETSOUTHISLAND.csv` 
 3. Run:
    ```bash
-   python paper_04_eda_and_coding.py
+  NZ_wind_casual_DML.ipynb
