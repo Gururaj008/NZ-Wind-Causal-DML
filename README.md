@@ -26,8 +26,8 @@ Expected key columns used in DML:
 1. Create environment and install dependencies (typical):
    - `pandas, numpy, matplotlib, seaborn, scipy, statsmodels, scikit-learn, xgboost, networkx, tqdm` [file:241]
 2. Place input CSVs under:
-   - `DataFinaldataset/ENHANCEDDATASETNORTHISLAND.csv`
-   - `DataFinaldataset/ENHANCEDDATASETSOUTHISLAND.csv` [file:241]
+   - `Data/Finaldataset/ENHANCEDDATASETNORTHISLAND.csv`
+   - `DataF/inaldataset/ENHANCEDDATASETSOUTHISLAND.csv` [file:241]
 3. Run:
    ```bash
    python paper_04_eda_and_coding.py
